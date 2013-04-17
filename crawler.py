@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+from lib.graph import *
 import io, argparse
 
 def main(args):
