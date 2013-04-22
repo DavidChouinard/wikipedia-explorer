@@ -7,6 +7,7 @@ def main(args):
     graph = pickle.load(open(args.data, 'rb'))
 
     # TODO: Find the distance between args.source and args.destination
+    print "OMG"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
