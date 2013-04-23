@@ -1,69 +1,71 @@
 # -*- coding: utf-8 -*-
 
 from lib.graph import *
-import io, argparse, urllib, urllib2, json, pickle
+import io, os, argparse, urllib, urllib2, json, pickle
 import pprint
 
 TOPLEVEL_CATEGORY = "Category:History of computer science"
 TOPLEVEL_CATEGORY_ID = 30730499
 
+CATEGORY_PATH = 'data/categories.pkl'
+
 endpoint = 'http://en.wikipedia.org/w/api.php'
 parameters = {'format' : 'json',
-              'action' : 'query',
-              #'prop' : 'revisions',
-              #'rvprop' : 'content',
-              'prop' : 'links|categories',
-              'cllimit' : 500,
-              'pllimit' : 500,
-              'plnamespace' : 0,
-              #'prop' : 'extracts',
-              #'exsectionformat' : 'raw',
-              #'exintro' : '1',
+              'action' : 'parse',
+              'prop' : 'links',
+              'section' : 0,
               'redirects' : True}
 
 crawled_articles = []
-categories = set([TOPLEVEL_CATEGORY])
+restrict_categories = set([TOPLEVEL_CATEGORY])
 
 def main(args):
-    get_child_categories(TOPLEVEL_CATEGORY_ID)
+    global restrict_categories
+    if os.path.exists(CATEGORY_PATH):
+        restrict_categories = pickle.load(open(CATEGORY_PATH, 'rb'))
+    else:
+        get_child_categories(TOPLEVEL_CATEGORY_ID)
+        pickle.dump(restrict_categories, open(CATEGORY_PATH, 'wb'), -1)
 
     graph = Graph(crawl(args.start))
 
     pickle.dump(graph, open('data/wikipedia.pkl', 'wb'), -1)
 
 def crawl(title):
-    parameters["titles"] = title
+    parameters["page"] = title.encode('utf8')
     crawled_articles.append(title)
 
-    response = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(encode_dict(parameters)))))
-    page = response[u'query'][u'pages'].values()[0]
+    response = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(parameters))))[u'parse']
 
-    #pprint.pprint(response)
+    adjacent_nodes = []
+    for link in response[u'links']:
+        if link[u'*'] not in crawled_articles and link[u'ns'] == 0 and link[u'exists'] == u'':
+            print link[u'*']
+            query_parameters = {'format': 'json',
+                                'action': 'query',
+                                'prop': 'categories',
+                                'titles': link[u'*'].encode('utf8'),
+                                'cllimit': 500}
+            categories = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(query_parameters))))[u'query'][u'pages'].values()[0]
 
-    if u'missing' in page:
-        return None
-    else:
-        adjacent_nodes = []
-
-        for link in page[u'links']:
-            print link[u'title']
-            if link[u'title'] not in crawled_articles and is_in_categories(page[u'categories']):
+            if u'categories' in categories and is_in_categories(categories[u'categories']):
                 print "ACCEPTED"
-                node = crawl(link[u'title'])
+                node = crawl(link[u'*'])
                 if node:
-                    adjacent_nodes.append(crawl(link[u'title']))
+                    adjacent_nodes.append(crawl(link[u'*']))
             else:
                 print "REJECTED"
 
-        return Node({"title": page[u'title'] , "id": page[u'pageid']}, adjacent_nodes)
+    return Node({"title": response[u'title']}, adjacent_nodes)
 
-def is_in_categories(page):
-    for category in page:
-        if category[u'title'] in categories:
+def is_in_categories(categories):
+    for category in categories:
+        if category[u'title'] in restrict_categories:
             return True
     return False
 
 def get_child_categories(category_id):
+    global restrict_categories
     query_parameters = {'format': 'json',
                         'action': 'query',
                         'list': 'categorymembers',
@@ -75,9 +77,9 @@ def get_child_categories(category_id):
     #pprint.pprint(response)
 
     for category in response[u'query'][u'categorymembers']:
-        if category[u'title'] not in categories:
+        if category[u'title'] not in restrict_categories:
             #print category[u'title']
-            categories.add(category[u'title'])
+            restrict_categories.add(category[u'title'])
             get_child_categories(category[u'pageid'])
 
 def encode_dict(in_dict):
