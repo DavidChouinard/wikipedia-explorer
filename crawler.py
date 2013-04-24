@@ -4,10 +4,10 @@ from lib.graph import *
 import io, os, argparse, urllib, urllib2, json, pickle
 import pprint
 
-TOPLEVEL_CATEGORY = "Category:Computer science"
-TOPLEVEL_CATEGORY_ID = 691117
-
+#TOPLEVEL_CATEGORY = "Category:Computer science"
+#TOPLEVEL_CATEGORY_ID = 691117
 #CATEGORY_PATH = 'data/categories.pkl'
+MAX_DEPTH = 40
 
 endpoint = 'http://en.wikipedia.org/w/api.php'
 parameters = {'format' : 'json',
@@ -31,7 +31,11 @@ def main(args):
 
     pickle.dump(graph, open('data/wikipedia.pkl', 'wb'), -1)
 
-def crawl(title):
+def crawl(title, depth = 1):
+
+    if depth >= MAX_DEPTH:
+        return None
+
     parameters["page"] = title.encode('utf8')
     crawled_articles.append(title)
 
@@ -40,27 +44,19 @@ def crawl(title):
     adjacent_nodes = []
     for link in response[u'links']:
         if link[u'*'] not in crawled_articles and link[u'ns'] == 0 and u'exists' in link:
-            print link[u'*']
-            query_parameters = {'format': 'json',
-                                'action': 'query',
-                                'prop': 'categories',
-                                'titles': link[u'*'].encode('utf8'),
-                                'cllimit': 500}
-            categories = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(query_parameters))))[u'query'][u'pages'].values()[0]
-
-            if u'categories' in categories and is_computer_science(categories[u'categories']):
-                node = crawl(link[u'*'])
-                if node:
-                    adjacent_nodes.append(crawl(link[u'*']))
+            print link[u'*'] + "  " + str(depth)
+            #query_parameters = {'format': 'json',
+                                #'action': 'query',
+                                #'prop': 'categories',
+                                #'titles': link[u'*'].encode('utf8'),
+                                #'cllimit': 500}
+            #categories = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(query_parameters))))[u'query'][u'pages'].values()[0]
+            #if u'categories' in categories and is_computer_science(categories[u'categories']):
+            node = crawl(link[u'*'], depth + 1)
+            if node:
+                adjacent_nodes.append(crawl(link[u'*']))
 
     return Node({"title": response[u'title']}, adjacent_nodes)
-
-def is_computer_science(categories):
-    for category in categories:
-        if ("comput" in category[u'title'].lower() or "software" in category[u'title'].lower()
-                or "program" in category[u'title'].lower() or "cybet" in category[u'title'].lower() ):
-            return True
-    return False
 
 def is_in_categories(categories):
     for category in categories:
