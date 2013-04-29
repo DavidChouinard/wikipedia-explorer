@@ -51,7 +51,8 @@ def crawl(title, depth = 1):
                                 'cllimit': 500}
             categories = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(query_parameters))))[u'query'][u'pages'].values()[0]
             if u'categories' in categories and is_computer_science(categories[u'categories']):
-                print link[u'*'] + "  " + str(depth)
+                #print link[u'*'] + "  " + str(depth)
+                print link[u'*']
                 node = crawl(link[u'*'], depth + 1)
                 if node:
                     adjacent_nodes.append(node)

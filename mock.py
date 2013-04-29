@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from lib.graph import *
 import pickle
 
 def main():
-    graph = Graph(
-                Node({"title": "Foo"}, [
-                    Node({"title": "Foo1"}, []),
-                    Node({"title": "Foo2"}, [
-                            Node({"title": "Bar"}, [])
-                        ])
-                ])
-            )
+    graph = {
+        "Computer science": ["Computational complexity theory", "Theory of computation"],
+        "Computational complexity theory": ["Theory of computation"],
+        "Theory of computation": []
+    }
 
     pickle.dump(graph, open('data/mock.pkl', 'wb'), -1)
 
