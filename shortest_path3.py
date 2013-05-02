@@ -3,15 +3,22 @@ import io, argparse, pickle, pprint
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
-   # pprint.pprint(graph)
-    find_shortest_path(graph,args.source,args.destination,[])
+    #pprint.pprint(graph)
+    for source_k, source_v in graph.iteritems():
+        for dest_k, dest_v in graph.iteritems():
+            sp = find_shortest_path(graph,source_k,dest_k,[])
+            print sp
+    sp = find_shortest_path(graph,args.source,args.destination,[])
+    print sp
+    if sp :
+        print len(sp)
 
 # from http://www.python.org/doc/essays/graphs.html
 
 def find_shortest_path(graph, start, end, path):
     path = path + [start]
     if start == end:
-        print path
+        #print path
         return path
     if not start in graph:
         return None
