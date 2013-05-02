@@ -26,7 +26,7 @@ def main(args):
         parameters["page"] = title.encode('utf8')
         response = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(parameters))))[u'parse']
 
-        print u'Adding adjacent nodes for article ' + title
+        print u'Adding adjacent nodes for article ' + title.encode('ascii', 'ignore')
         for link in response[u'links']:
             if link[u'ns'] == 0 and u'exists' in link:
                 adjacent.add(link[u'*'])
@@ -53,8 +53,10 @@ def get_subcat_articles(category):
             if member[u'title'] not in graph:
                 graph[member[u'title']] = set()
         elif member[u'ns'] == 14:
-            print u'Fetching articles from ' + member[u'title']
+            print u'Fetching articles from ' + member[u'title'] 
             get_subcat_articles(member[u'title'])
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -62,3 +64,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args)
+
