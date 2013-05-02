@@ -26,7 +26,7 @@ def main(args):
         parameters["page"] = title.encode('utf8')
         response = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(parameters))))[u'parse']
 
-        print u'Adding adjacent nodes for article ' + title
+        print u'Adding adjacent nodes for article ' + title.encode('ascii', 'ignore')
         for link in response[u'links']:
             if link[u'ns'] == 0 and u'exists' in link:
                 adjacent.add(link[u'*'])
