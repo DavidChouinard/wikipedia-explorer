@@ -1,13 +1,16 @@
 from lib.graph import *
-import io, argparse, pickle, pprint
+import io, argparse, pickle, pprint, sys
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
+    #print len(graph)
     #pprint.pprint(graph)
     for source_k, source_v in graph.iteritems():
         for dest_k, dest_v in graph.iteritems():
             sp = find_shortest_path(graph,source_k,dest_k,[])
-            print sp
+            
+            print sp, source_k.encode('ascii', 'ignore'), dest_k.encode('ascii', 'ignore')
+            sys.stdout.flush()
     sp = find_shortest_path(graph,args.source,args.destination,[])
     print sp
     if sp :
@@ -21,6 +24,7 @@ def find_shortest_path(graph, start, end, path):
         #print path
         return path
     if not start in graph:
+        print "start node not in graph"
         return None
     shortest = None
     for node in graph[start]:
