@@ -1,12 +1,29 @@
 from lib.graph import *
 import io, argparse, pickle, pprint, sys
 
-maxPathLength = 4
+maxPathLength = 6
+BIG = 1000000
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
+    pprint.pprint(graph)
+    max_n_step_size = 0
+    min_n_step_size = BIG
     for source_k, source_v in graph.iteritems():
-        print source_k.encode('ascii', 'ignore'), len(n_step_set(graph, source_k, 1, []))
+        n_step = n_step_set(graph, source_k, 3, [])
+        n_step_size = len(n_step)
+        if n_step_size > max_n_step_size:
+            max_n_step_size = n_step_size
+        if n_step_size < min_n_step_size:
+            min_n_step_size = n_step_size
+        print n_step_size, n_step, source_k.encode('ascii', 'ignore')
+        sys.stdout.flush()
+
+    print "min: ", min_n_step_size
+    print "max: ", max_n_step_size
+
+    for source_k, source_v in graph.iteritems():
+        print "here", source_k.encode('ascii', 'ignore'), len(n_step_set(graph, source_k, 1, []))
         for dest_k, dest_v in graph.iteritems():
             #sp = find_shortest_path(graph,source_k,dest_k,[])
             sp = bfs(graph,source_k,dest_k)
@@ -43,14 +60,15 @@ def find_shortest_path(graph, start, end, path):
     return shortest
 
 def n_step_set(graph, start, n, n_set):
-    print n_set
+    #print n_set
     if n <= 0:
         return n_set
     if not start in graph:
-        return []
+        return n_set
     for node in graph[start]:
         if node not in n_set:
-            n_set = n_set + [node] + n_step_set(graph, node, n-1, n_set)
+            n_set.append(node)
+            n_set = n_step_set(graph, node, n-1, n_set)
     return n_set
 
 def find_longest_path(graph, start, end, path):
