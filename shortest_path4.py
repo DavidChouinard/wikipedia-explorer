@@ -49,9 +49,11 @@ def n_step_set(graph, start, n, n_set):
     if not start in graph:
         return []
     for node in graph[start]:
-        if node not in n_set:
-            n_set = n_set + [node] + n_step_set(graph, node, n-1, n_set)
-    return n_set
+        if node in n_set:
+            n_set = n_set + n_step_set(graph, node, n-1, n_set)
+        elif node not in n_set:
+            n_set + [node] + n_step_set(graph, node, n-1, n_set)
+  #  return n_set
 
 def find_longest_path(graph, start, end, path):
     if len(path) > maxPathLength:
