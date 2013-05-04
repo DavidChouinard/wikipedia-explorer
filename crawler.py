@@ -53,8 +53,10 @@ def get_subcat_articles(category):
             if member[u'title'] not in graph:
                 graph[member[u'title']] = set()
         elif member[u'ns'] == 14:
-            print u'Fetching articles from ' + member[u'title']
+            print u'Fetching articles from ' + member[u'title'] 
             get_subcat_articles(member[u'title'])
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -62,3 +64,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args)
+

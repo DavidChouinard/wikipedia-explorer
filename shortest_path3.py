@@ -5,6 +5,7 @@ maxPathLength = 10
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
+
     #print len(graph)
     #pprint.pprint(graph)
     for source_k, source_v in graph.iteritems():
@@ -24,7 +25,64 @@ def main(args):
     if sp :
         print len(sp)
 
-# from http://www.python.org/doc/essays/graphs.html
+# adopted from http://www.python.org/doc/essays/graphs.html
+
+def bfs(graph, start, end):
+    # maintain a queue of paths
+    queue = []
+    # push the first path into the queue
+    queue.append([start])
+    while queue:
+        # get the first path from the queue
+        path = queue.pop(0)
+        # get the last node from the path
+        node = path[-1]
+        # path found
+        if node == end:
+            return path
+        # enumerate all adjacent nodes, construct a new path and push it into the queue
+        for adjacent in graph.get(node, []):
+            new_path = list(path)
+            new_path.append(adjacent)
+            queue.append(new_path)
+
+
+def find_reach(graph, start, reach)
+    for node in graph[start]
+    
+
+
+def find_shortest_path(graph, start, end, reach):
+    path = path + [start]
+    if start == end:
+       # print path
+        return path
+    if not start in graph:
+        return None
+    shortest = None
+    for node in graph[start]:
+        if node not in path:
+            newpath = find_shortest_path(graph, node, end, path)
+            if newpath:
+                if not shortest or len(newpath) < len(shortest):
+                    shortest = newpath
+    return shortest
+
+def find_shortest_path(graph, start, end, path):
+    path = path + [start]
+    if start == end:
+       # print path
+        return path
+    if not start in graph:
+        return None
+    shortest = None
+    for node in graph[start]:
+        if node not in path:
+            newpath = find_shortest_path(graph, node, end, path)
+            if newpath:
+                if not shortest or len(newpath) < len(shortest):
+                    shortest = newpath
+    return shortest
 
 def find_shortest_path(graph, start, end, path):
     if len(path) > maxPathLength:
@@ -32,7 +90,6 @@ def find_shortest_path(graph, start, end, path):
         sys.stdout.flush()
     path = path + [start]
     if start == end:
-        #print path
         return path
     if not start in graph:
         return None

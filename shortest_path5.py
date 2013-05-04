@@ -1,17 +1,101 @@
 from lib.graph import *
-import io, argparse, pickle, pprint, sys
+import io, argparse, pickle, pprint, sys, random
+
+from dijkstra_v2 import *
 
 maxPathLength = 6
 BIG = 1000000
+maxRandomWeight = 10
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
-    pprint.pprint(graph)
-    max_n_step_size = 0
-    min_n_step_size = BIG
+
+    de_graph = add_dead_ends_to_graph(graph)
+    pprint.pprint(de_graph)
+    sys.stdout.flush()
+
+    wgraph = make_unit_weighted_graph(de_graph)
+    pprint.pprint(wgraph)
+
+    rgraph = make_random_weighted_graph(de_graph, maxRandomWeight)
+    pprint.pprint(rgraph)
+
+    graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
         n_step_size = len(n_step)
+        graph_ns_size[source_k] = n_step_size
+
+    cluster_centers = []
+    sorted_graph = sorted(graph_ns_size.items(), key=lambda x:x[1])
+
+    for i in range(len(sorted_graph)):
+
+        n, l = sorted_graph[-(i+1)]
+        print i, n.encode('ascii', 'ignore'), l
+
+        already_in = False
+        for c in cluster_centers:
+            if n in n_step_set(graph, c, 3, []):
+                already_in = True
+                print n.encode('ascii', 'ignore'), " is n-reachable from cluster center ", c.encode('ascii', 'ignore')
+        if not already_in:
+            cluster_centers.append(n)
+
+    sink_count = {}
+    for source_k, source_v in graph.iteritems():
+        for dest in source_v:
+            if dest not in sink_count:
+                sink_count[dest] = 1
+            else:
+                sink_count[dest] = sink_count[dest] + 1
+    
+    sorted_sink_count = sorted(sink_count.items(), key=lambda x:x[1])
+
+    print "Sink counts: ", len(sink_count)
+    for i in range(len(sorted_sink_count)):
+        s, c = sorted_sink_count[-(i+1)]
+        print i, s.encode('ascii', 'ignore'), c
+
+    dead_ends = []
+    for s in sink_count:
+        if s not in graph:
+            dead_ends.append(s)
+        else:
+            if graph[s] == set([]):
+                dead_ends.append(s)
+
+    print "Dead ends: ", len(dead_ends)    
+    for d in dead_ends:
+        print d.encode('ascii', 'ignore')
+
+    print len(graph), len(cluster_centers)
+
+    print "Cluster centers: "
+    for c in cluster_centers:
+        print c, graph_ns_size[c]
+
+
+    max_node, max_length = sorted_graph[-1]
+    print max_node
+
+    max_node_set = n_step_set(graph, max_node, 3, [])
+    print max_node_set
+
+    for dest_k, dest_v in graph.iteritems():
+        if dest_k in max_node_set:
+            print "Yes - ", dest_k.encode('ascii', 'ignore')
+        else:
+            print "No  - ", dest_k.encode('ascii', 'ignore')
+
+    for v in sorted_graph:
+        print v
+        
+
+    max_n_step_size = 0
+    min_n_step_size = BIG
+    for source_k, source_v in graph.iteritems():
+        n_step_size = graph_ns_size[source_k]
         if n_step_size > max_n_step_size:
             max_n_step_size = n_step_size
         if n_step_size < min_n_step_size:
@@ -23,12 +107,15 @@ def main(args):
     print "max: ", max_n_step_size
 
     for source_k, source_v in graph.iteritems():
-        print "here", source_k.encode('ascii', 'ignore'), len(n_step_set(graph, source_k, 1, []))
+        print "here - ", source_k.encode('ascii', 'ignore'), " - ", len(n_step_set(graph, source_k, 1, []))
         for dest_k, dest_v in graph.iteritems():
+            print source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
+            sys.stdout.flush()
             #sp = find_shortest_path(graph,source_k,dest_k,[])
             sp = bfs(graph,source_k,dest_k)
+            sp_dijkstra = shortestPath(wgraph,source_k,dest_k)
             if sp:
-                print len(sp), sp, source_k.encode('ascii', 'ignore'), dest_k.encode('ascii', 'ignore')
+                print len(sp), sp, ":", source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
             sys.stdout.flush()
     #sp = find_shortest_path(graph,args.source,args.destination,[])
     #print "here", sp
@@ -113,6 +200,55 @@ def bfs(graph, start, end):
             new_path.append(adjacent)
             queue.append(new_path)
 
+def find_dead_ends(graph):
+    sink_count = {}
+    for source_k, source_v in graph.iteritems():
+        for dest in source_v:
+            if dest not in sink_count:
+                sink_count[dest] = 1
+            else:
+                sink_count[dest] = sink_count[dest] + 1
+
+    dead_ends = []
+    for s in sink_count:
+        if s not in graph:
+            dead_ends.append(s)
+        else:
+            if graph[s] == set():
+                dead_ends.append(s)
+    return dead_ends
+
+# Add the leaf nodes to graph, using unweighted list
+# This is the original graph format
+def add_dead_ends_to_graph(graph):
+    dead_ends = find_dead_ends(graph)
+    for de in dead_ends:
+        graph[de] = set([])
+    return graph
+
+# Change adjacency list representation to dictionary
+# and add unit weights
+def make_unit_weighted_graph(graph):
+    weighted_graph = {}
+    for node in graph:
+        v = graph[node]
+        weighted_graph[node] = {}
+        for d in v:
+            weighted_graph[node][d] = 1
+    return weighted_graph
+        
+def make_random_weighted_graph(graph, max_weight):
+    weighted_graph = {}
+    for node in graph:
+        tmp_dict = {}
+        v = graph[node]
+        for d in v:
+            tmp_dict[d] = random.randint(1,max_weight)
+        weighted_graph[node] = tmp_dict
+    return weighted_graph
+        
+        
+        
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
