@@ -1,4 +1,4 @@
-from lib.graph import *
+#from lib.graph import *
 import io, argparse, pickle, pprint, sys
 
 maxPathLength = 10
@@ -65,8 +65,6 @@ def bfs(graph, start, end):
 
 def find_reach(graph, start, reach)
     for node in graph[start]
-    
-
 
 def find_shortest_path(graph, start, end, reach):
     path = path + [start]
@@ -106,11 +104,7 @@ def find_shortest_path(graph, start, end, path):
         sys.stdout.flush()
     path = path + [start]
     if start == end:
-<<<<<<< HEAD
-       # print path
-=======
         #print path
->>>>>>> 276127a8370f0500d74a1f7c7b7beea42d069b9b
         return path
     if not start in graph:
         return None
@@ -158,11 +152,6 @@ def find_longest_path(graph, start, end, path):
                     longest = newpath
     return longest
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 276127a8370f0500d74a1f7c7b7beea42d069b9b
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("data", help="data file containing the graph")
