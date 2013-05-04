@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # graph is in adjacent list representation
 graph = {
         '1': ['2', '3', '4'],
@@ -28,14 +27,3 @@ def bfs(graph, start, end):
             queue.append(new_path)
 
 print bfs(graph, '1', '11')
-=======
-#! /usr/bin/python
-# -*- coding: utf-8 -*-
-
-class TestSequenceFunctions(unittest.TestCase):
-    pass
-
-if __name__ == '__main__':
-    unittest.main()
-
->>>>>>> cab4f0e06eb0d682c964013f15a7b3866aa328d5

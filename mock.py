@@ -4,10 +4,10 @@ import pickle
 
 def main():
     graph = {
-        "Computer science": ["Computational complexity theory", "Theory of computation", "Abstract algebra"],
-        "Computational complexity theory": ["Complexity theory", "Lambda calculus"],
-        "Abstract algebra": ["Von Newman"],
-        "Theory of computation": []
+        "Computer science": set(["Computational complexity theory", "Theory of computation", "Abstract algebra"]),
+        "Computational complexity theory": set(["Complexity theory", "Lambda calculus"]),
+        "Abstract algebra": set(["Von Newman"]),
+        "Theory of computation": set()
     }
 
     pickle.dump(graph, open('data/mock.pkl', 'wb'), -1)
