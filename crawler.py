@@ -22,11 +22,14 @@ def main(args):
                   'section' : 0,
                   'redirects' : True}
 
+    length = len(graph)
+    i = 0
     for title, adjacent in graph.iteritems():
         parameters["page"] = title.encode('utf8')
         response = json.load(urllib2.urlopen(urllib2.Request(endpoint, urllib.urlencode(parameters))))[u'parse']
 
-        print u'Adding adjacent nodes for article ' + title.encode('ascii', 'ignore')
+        i += 1
+        print u'Adding adjacent nodes for article ' + title.encode('ascii','ignore') + '  ' + str(i) + u'/' + str(length)
         for link in response[u'links']:
             if link[u'ns'] == 0 and u'exists' in link:
                 adjacent.add(link[u'*'])
@@ -53,9 +56,8 @@ def get_subcat_articles(category):
             if member[u'title'] not in graph:
                 graph[member[u'title']] = set()
         elif member[u'ns'] == 14:
-            print u'Fetching articles from ' + member[u'title'] 
+            print u'Fetching articles from ' + member[u'title'].encode('ascii', 'ignore')
             get_subcat_articles(member[u'title'])
-
 
 
 if __name__ == "__main__":
