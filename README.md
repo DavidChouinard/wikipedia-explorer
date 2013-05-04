@@ -6,4 +6,14 @@ This builds a graph representation of Wikipedia articles and showcases various g
 Depedencies
 -------------
 
-This project depends on pickle. Make sure to install it through easy_install or pip.
+This project depends on the pickle Python module. The easiest way to install it is through easy_install or pip, as follows:
+
+```
+easy_install pickle
+```
+
+or
+
+```
+pip install pickle
+```
