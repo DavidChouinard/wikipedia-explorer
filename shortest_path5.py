@@ -8,7 +8,7 @@ maxPathLength = 6
 BIG = 1000000
 maxRandomWeight = 10
 
-graph = {'a': {'w': 14, 'x': 7, 'y': 9},
+#graph = {'a': {'w': 14, 'x': 7, 'y': 9},
             'b': {'w': 9, 'z': 6},
             'w': {'a': 14, 'b': 9, 'y': 2},
             'x': {'a': 7, 'y': 10, 'z': 15},
@@ -16,7 +16,7 @@ graph = {'a': {'w': 14, 'x': 7, 'y': 9},
             'z': {'b': 6, 'x': 15, 'y': 11}}
 
 def main(args):
-    #graph = pickle.load(open(args.data, 'rb'))
+    graph = pickle.load(open(args.data, 'rb'))
 
     de_graph = add_dead_ends_to_graph(graph)
     pprint.pprint(de_graph)
