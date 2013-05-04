@@ -1,14 +1,22 @@
 from lib.graph import *
 import io, argparse, pickle, pprint, sys, random
 
+from dijkstra_v1 import *
 from dijkstra_v2 import *
 
 maxPathLength = 6
 BIG = 1000000
 maxRandomWeight = 10
 
+graph = {'a': {'w': 14, 'x': 7, 'y': 9},
+            'b': {'w': 9, 'z': 6},
+            'w': {'a': 14, 'b': 9, 'y': 2},
+            'x': {'a': 7, 'y': 10, 'z': 15},
+            'y': {'a': 9, 'w': 2, 'x': 10, 'z': 11},
+            'z': {'b': 6, 'x': 15, 'y': 11}}
+
 def main(args):
-    graph = pickle.load(open(args.data, 'rb'))
+    #graph = pickle.load(open(args.data, 'rb'))
 
     de_graph = add_dead_ends_to_graph(graph)
     pprint.pprint(de_graph)
@@ -114,6 +122,7 @@ def main(args):
             #sp = find_shortest_path(graph,source_k,dest_k,[])
             sp = bfs(graph,source_k,dest_k)
             sp_dijkstra = shortestPath(wgraph,source_k,dest_k)
+            #sp_dijkstra = shortestpath(wgraph,source_k,dest_k)
             if sp:
                 print len(sp), sp, ":", source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
             sys.stdout.flush()
