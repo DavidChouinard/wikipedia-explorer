@@ -241,6 +241,7 @@ def make_random_weighted_graph(graph, max_weight):
     weighted_graph = {}
     for node in graph:
         v = graph[node]
+        weighted_graph[node] = {}
         for d in v:
             weighted_graph[node][d] = random.randint(1,max_weight)
     return weighted_graph
