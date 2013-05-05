@@ -17,6 +17,7 @@ maxRandomWeight = 10
 
 def main(args):
     graph = pickle.load(open(args.data, 'rb'))
+    pprint.pprint(graph)
 
     de_graph = add_dead_ends_to_graph(graph)
     #pprint.pprint(de_graph)
@@ -26,6 +27,8 @@ def main(args):
 
     rgraph = make_random_weighted_graph(de_graph, maxRandomWeight)
     #pprint.pprint(rgraph)
+
+#    graph_ns_size = nsize_dictionary(graph)
 
 
     graph_ns_size = {}
@@ -46,7 +49,8 @@ def main(args):
         for c in cluster_centers:
             if n in n_step_set(graph, c, 3, []):
                 already_in = True
-                print n.encode('ascii', 'ignore'), " is n-reachable from cluster center ", c.encode('ascii', 'ignore')
+                print n.encode('ascii', 'ignore'), 
+                " is n-reachable from cluster center ", c.encode('ascii', 'ignore')
         if not already_in:
             cluster_centers.append(n)
 
@@ -155,12 +159,13 @@ def find_shortest_path(graph, start, end, path):
                     shortest = newpath
     return shortest
 
-def nsize_dictionary:
+def nsize_dictionary(graph):
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
         n_step_size = len(n_step)
         graph_ns_size[source_k] = n_step_size
+    return graph_ns_size
 
 def n_step_set(graph, start, n, n_set):
     #print n_set
@@ -195,6 +200,8 @@ def find_longest_path(graph, start, end, path):
                     longest = newpath
     return longest
 
+# bfs found here : 
+#   http://stackoverflow.com/questions/8922060/breadth-first-search-trace-path
 def bfs(graph, start, end):
     # maintain a queue of paths
     queue = []
@@ -215,6 +222,7 @@ def bfs(graph, start, end):
             new_path = list(path)
             new_path.append(adjacent)
             queue.append(new_path)
+
 
 def find_dead_ends(graph):
     sink_count = {}
