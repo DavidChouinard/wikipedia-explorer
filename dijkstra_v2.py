@@ -4,6 +4,7 @@
 
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/117228
 from priodict import priorityDictionary
+import pprint
 
 def Dijkstra(G,start,end=None):
     """
@@ -80,11 +81,12 @@ def shortestPath(G,start,end):
 
     D,P = Dijkstra(G,start,end)
     Path = []
-    while 1:
-        Path.append(end)
-        if end == start: break
-        print P
-        end = P[end]
-    Path.reverse()
+    if end in D:
+        while 1:
+            Path.append(end)
+            if end == start: break
+            end = P[end]
+            Path.reverse()
     return Path
+    
 ## end of http://code.activestate.com/recipes/119466/ }}}
