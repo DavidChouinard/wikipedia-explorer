@@ -16,6 +16,9 @@ maxRandomWeight = 10
 #            'z': {'b': 6, 'x': 15, 'y': 11}}
 
 def main(args):
+    # If both args.d and args.n are false, use DFS
+    # If args.n is true, use naive
+    # If args.d is true, use Dijkstra
     graph = pickle.load(open(args.data, 'rb'))
 
     de_graph = add_dead_ends_to_graph(graph)
@@ -155,7 +158,7 @@ def find_shortest_path(graph, start, end, path):
                     shortest = newpath
     return shortest
 
-def nsize_dictionary:
+def nsize_dictionary():
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
@@ -270,4 +273,6 @@ if __name__ == "__main__":
     parser.add_argument("data", help="data file containing the graph")
     parser.add_argument("source", help="source article title")
     parser.add_argument("destination", help="destination article title")
+    parser.add_argument('-n', action='store_true', default=False, help="use naive algorithm")
+    parser.add_argument('-d', action='store_true', default=False, help="use Dijkstra's algorithm")
     main(parser.parse_args())
