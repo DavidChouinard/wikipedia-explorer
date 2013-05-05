@@ -46,19 +46,20 @@ def main(args):
     # If args.d is true, use Dijkstra
 
     graph = pickle.load(open(args.data, 'rb'))
+    print "Original graph"
     pprint.pprint(graph)
 
     de_graph = add_dead_ends_to_graph(graph)
-    #pprint.pprint(de_graph)
+    print "Graph with dead ends added"
+    pprint.pprint(de_graph)
 
     wgraph = make_unit_weighted_graph(graph)
-    pprint.pprint(wgraph)
+    #pprint.pprint(wgraph)
 
     rgraph = make_random_weighted_graph(de_graph, maxRandomWeight)
     #pprint.pprint(rgraph)
 
 #    graph_ns_size = nsize_dictionary(graph)
-
 
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
@@ -226,9 +227,7 @@ def find_shortest_path(graph, start, end, path):
                     shortest = newpath
     return shortest
 
-<<<<<<< HEAD
 def nsize_dictionary(graph):
->>>>>>> b0fa95d7782028038055aaa947848fafd6cb0920
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
@@ -292,7 +291,13 @@ def bfs(graph, start, end):
             new_path.append(adjacent)
             queue.append(new_path)
 
-
+# Returns a list of nodes that are the destination
+# from some link in the original adjacency list
+# graph but which were not included as nodes in 
+# that original graph
+# It does this by first making a dictionary of all
+# destinations.  The keys are the number of links to
+# the destinations.
 def find_dead_ends(graph):
     sink_count = {}
     for source_k, source_v in graph.iteritems():
@@ -330,6 +335,8 @@ def make_unit_weighted_graph(graph):
             weighted_graph[node][d] = 1
     return weighted_graph
         
+# Change adjacency list representation to dictionary
+# and add unit weights
 def make_random_weighted_graph(graph, max_weight):
     weighted_graph = {}
     for node in graph:
