@@ -4,26 +4,56 @@ import io, argparse, pickle, pprint, sys, random
 from dijkstra_v1 import *
 from dijkstra_v2 import *
 
+n_step_value = 3
 maxPathLength = 6
 BIG = 1000000
 maxRandomWeight = 10
 
-#graph = {'a': {'w': 14, 'x': 7, 'y': 9},
-#            'b': {'w': 9, 'z': 6},
-#            'w': {'a': 14, 'b': 9, 'y': 2},
-#            'x': {'a': 7, 'y': 10, 'z': 15},
-#            'y': {'a': 9, 'w': 2, 'x': 10, 'z': 11},
-#            'z': {'b': 6, 'x': 15, 'y': 11}}
+graph = {'a': {'w': 14, 'x': 7, 'y': 9},
+            'b': {'w': 9, 'z': 6},
+            'w': {'a': 14, 'b': 9, 'y': 2},
+            'x': {'a': 7, 'y': 10, 'z': 15},
+            'y': {'a': 9, 'w': 2, 'x': 10, 'z': 11},
+            'z': {'b': 6, 'x': 15, 'y': 11}
+            }
+
+graph = {'a': {'w': 14, 'x': 7, 'y': 9, 'empty': 1},
+            'b': {'w': 9, 'z': 6},
+            'w': {'a': 14, 'b': 9, 'y': 2},
+            'x': {'a': 7, 'y': 10, 'z': 15},
+            'y': {'a': 9, 'w': 2, 'x': 10, 'z': 11},
+            'z': {'b': 6, 'x': 15, 'y': 11},
+            'empty': {}}
+
+G = {'s':{'u':10, 'x':5}, 
+     'u':{'v':1, 'x':2}, 
+     'v':{'y':4}, 
+     'x':{'u':3, 'v':9, 'y':2}, 
+     'y':{'s':7, 'v':6}}
+
+
+other_graph = {'a': set(['w', 'x', 'y', 'empty']),
+              'b': set(['w', 'z']),
+              'w': set(['a', 'b', 'y']),
+              'x': set(['a', 'y', 'z']),
+              'y': set(['a', 'w', 'x', 'z']),
+              'z': set(['b', 'x', 'y']),
+              'empty': set(['a'])}
 
 def main(args):
+
+    # If both args.d and args.n are false, use DFS
+    # If args.n is true, use naive
+    # If args.d is true, use Dijkstra
+
     graph = pickle.load(open(args.data, 'rb'))
     pprint.pprint(graph)
 
     de_graph = add_dead_ends_to_graph(graph)
     #pprint.pprint(de_graph)
 
-    wgraph = make_unit_weighted_graph(de_graph)
-    #pprint.pprint(wgraph)
+    wgraph = make_unit_weighted_graph(graph)
+    pprint.pprint(wgraph)
 
     rgraph = make_random_weighted_graph(de_graph, maxRandomWeight)
     #pprint.pprint(rgraph)
@@ -33,7 +63,7 @@ def main(args):
 
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
-        n_step = n_step_set(graph, source_k, 3, [])
+        n_step = n_step_set(graph, source_k, n_step_value, [])
         n_step_size = len(n_step)
         graph_ns_size[source_k] = n_step_size
 
@@ -125,8 +155,10 @@ def main(args):
             sys.stdout.flush()
             #sp = find_shortest_path(graph,source_k,dest_k,[])
             sp = bfs(graph,source_k,dest_k)
-            #sp_dijkstra = shortestPath(wgraph,source_k,dest_k)
+            sp_dijkstra = shortestPath(rgraph,source_k,dest_k)
             #sp_dijkstra = shortestpath(wgraph,source_k,dest_k)
+            print "there"
+            sys.stdout.flush()
             if sp:
                 print len(sp), sp, ":", source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
             sys.stdout.flush()
@@ -134,6 +166,42 @@ def main(args):
     #print "here", sp
     #if sp :
         #print len(sp)
+
+    parent_cluster = {}
+
+    cluster_children = {}
+    for cc in cluster_centers:
+        cluster_children[cc] = []
+
+    for source_k in de_graph:
+        current_distance = sys.maxint
+        for cc in cluster_centers:
+            D, P = Dijkstra(rgraph, cc, source_k)
+            if source_k not in D:
+                y = sys.maxint
+            else:
+                y = D[source_k]
+            if y < current_distance:
+                current_distance = y
+                parent_cluster[source_k] = cc
+        cluster_children[parent_cluster[source_k]].append(source_k)
+
+    pprint.pprint(parent_cluster)
+
+    pprint.pprint(cluster_children)
+
+    D, P = Dijkstra(rgraph,'7 for all Mankind', 'Jeans')
+    print "D"
+    print D
+
+    print "P"
+    print P
+
+    print "after"
+
+    sp = shortestPath(rgraph,'7 for all Mankind', 'Jeans')
+    print sp
+    print "after sp"
 
 # from http://www.python.org/doc/essays/graphs.html
 
@@ -159,7 +227,9 @@ def find_shortest_path(graph, start, end, path):
                     shortest = newpath
     return shortest
 
+<<<<<<< HEAD
 def nsize_dictionary(graph):
+>>>>>>> b0fa95d7782028038055aaa947848fafd6cb0920
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
@@ -278,4 +348,6 @@ if __name__ == "__main__":
     parser.add_argument("data", help="data file containing the graph")
     parser.add_argument("source", help="source article title")
     parser.add_argument("destination", help="destination article title")
+    parser.add_argument('-n', action='store_true', default=False, help="use naive algorithm")
+    parser.add_argument('-d', action='store_true', default=False, help="use Dijkstra's algorithm")
     main(parser.parse_args())
