@@ -27,6 +27,7 @@ def main(args):
     rgraph = make_random_weighted_graph(de_graph, maxRandomWeight)
     #pprint.pprint(rgraph)
 
+
     graph_ns_size = {}
     for source_k, source_v in graph.iteritems():
         n_step = n_step_set(graph, source_k, 3, [])
@@ -153,6 +154,13 @@ def find_shortest_path(graph, start, end, path):
                 if not shortest or len(newpath) < len(shortest):
                     shortest = newpath
     return shortest
+
+def nsize_dictionary:
+    graph_ns_size = {}
+    for source_k, source_v in graph.iteritems():
+        n_step = n_step_set(graph, source_k, 3, [])
+        n_step_size = len(n_step)
+        graph_ns_size[source_k] = n_step_size
 
 def n_step_set(graph, start, n, n_set):
     #print n_set
