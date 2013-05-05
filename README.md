@@ -45,3 +45,12 @@ The following partitions the graph into clusters:
 ```
 python cluster.py data/wikipedia.pkl
 ```
+
+Tests
+------------
+
+Unit tests can be executed by running:
+
+```
+python test.py
+```
