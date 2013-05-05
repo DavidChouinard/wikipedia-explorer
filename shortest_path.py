@@ -1,5 +1,4 @@
-from lib.graph import *
-import io, argparse, pickle, pprint, sys, random
+import argparse, pickle, pprint, sys, random
 
 from dijkstra_v1 import *
 from dijkstra_v2 import *
@@ -264,9 +263,7 @@ def make_random_weighted_graph(graph, max_weight):
         for d in v:
             weighted_graph[node][d] = random.randint(1,max_weight)
     return weighted_graph
-        
-        
-        
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
