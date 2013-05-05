@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import io, os, argparse, urllib, urllib2, json, pickle
-#import pprint
 
 endpoint = 'http://en.wikipedia.org/w/api.php'
 
@@ -33,9 +32,8 @@ def main(args):
         for link in response[u'links']:
             if link[u'ns'] == 0 and u'exists' in link:
                 adjacent.add(link[u'*'])
-        #pprint.pprint(graph)
 
-    pickle.dump(graph, open('data/wikipedia.pkl', 'wb'), -1)
+    pickle.dump(graph, open(args.output, 'wb'), -1)
 
 def get_subcat_articles(category):
     if category in crawled_categories:
@@ -63,6 +61,7 @@ def get_subcat_articles(category):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("category", help="category to restrict to graph to")
+    parser.add_argument('output', nargs='?', default='data/wikipedia.pkl', help="location to output data file")
     args = parser.parse_args()
 
     main(args)
