@@ -1,0 +1,89 @@
+> python shortest_path.py data/jeans.pkl "Denim" "Jeans" -b
+BFS
+1 ['Denim', u'Jeans'] : Denim -> Jeans
+
+> python popular.py data/jeans.pkl 
+# Title, number of nodes that connect to this article
+Jeans 29
+Denim 28
+Types of business entity 16
+Clothing 12
+United States 10
+Fashion accessory 8
+Japan 7
+Italy 6
+Los Angeles 6
+Europe 6
+
+> python cluster.py data/jeans.pkl 
+Cluster center, size of n_step_set, size of cluster: 
+Jean Machine: 68, 54
+LittleBig: 66, 43
+Great Western Garment Co.: 53, 19
+Ikeda Jeans: 52, 11
+Donna Ida: 51, 10
+Jordache: 48, 10
+Lucky Brand Jeans: 46, 19
+Edwin (clothing retailer): 45, 9
+Emma, la polilla fashion: 45, 10
+Baggies (clothing): 44, 7
+....
+
+Parent cluster dictionary
+{u'1970s in fashion': u'Jordache',
+ u'1980s in fashion': u'Jordache',
+ u'7 for all Mankind': u'Donna Ida',
+ u'Abercrombie & Fitch': u'Hollister jeans',
+ u'Abercrombie & Fitch Co.': u'Hollister jeans',
+ u'Acne Jeans': u'Nudie Jeans',
+ u'Acronym': u'GAT (jeans)',
+ u'Adidas': u'Emma, la polilla fashion',
+ u'Adriana Lima': u'Jean Machine',
+ u'Advertisement': u'Emma, la polilla fashion',
+....
+
+Cluster members dictionary
+{u'Angels Jeanswear': [u'Embroidery',
+                       u'Diamond',
+                       u'Rectangle',
+                       u'Bead',
+                       u'Angels Jeanswear'],
+ u'Baggies (clothing)': [u'Zip',
+                         u'Pocket',
+                         u'Blacklight paint',
+                         u'Minneapolis',
+                         u'Terrycloth',
+                         u'Fashion accessory',
+                         u'Baggies (clothing)'],
+ u'Bell-bottoms': [u'Bell-bottoms', u'Knee', u'Trousers'],
+ u'Blue Blood Denim': [u'Harvey Nichols', u'Blue Blood Denim', u'Blue blood'],
+ u'Carpenter jeans': [u'Carpenter', u'Carpenter jeans', u'Human leg'],
+ u'Chip and Pepper': [u'Identical twin',
+                      u'Animated television series',
+                      u'NBC',
+                      u'Chip and Pepper'],
+
+> python all_shortest_paths.py data/jeans.pkl 
+Canada
+Asset
+Embroidery
+Model (person)
+Bloomingdale's
+Dillards
+Liz Claiborne
+Terminology
+SuperGroup plc
+1 [u'SuperGroup plc', u'Net income'] : SuperGroup plc -> Net income
+1 [u'SuperGroup plc', u'Earnings before interest and taxes'] : SuperGroup plc -> Earnings before interest and taxes
+1 [u'SuperGroup plc', u'Retail'] : SuperGroup plc -> Retail
+1 [u'SuperGroup plc', u'Cheltenham'] : SuperGroup plc -> Cheltenham
+1 [u'SuperGroup plc', u'Public company'] : SuperGroup plc -> Public company
+1 [u'SuperGroup plc', u'CEO'] : SuperGroup plc -> CEO
+1 [u'SuperGroup plc', u'Superdry'] : SuperGroup plc -> Superdry
+1 [u'SuperGroup plc', u'Peter Bamford'] : SuperGroup plc -> Peter Bamford
+1 [u'SuperGroup plc', u'Chair (official)'] : SuperGroup plc -> Chair (official)
+1 [u'SuperGroup plc', u'Asahi Super Dry'] : SuperGroup plc -> Asahi Super Dry
+1 [u'SuperGroup plc', u'London Stock Exchange'] : SuperGroup plc -> London Stock Exchange
+1 [u'SuperGroup plc', u'FTSE 250 Index'] : SuperGroup plc -> FTSE 250 Index
+1 [u'SuperGroup plc', u'Ticker symbol'] : SuperGroup plc -> Ticker symbol
+1 [u'SuperGroup plc', u'Types of business entity'] : SuperGroup plc -> Types of business entity
