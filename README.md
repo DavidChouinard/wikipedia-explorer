@@ -30,10 +30,10 @@ By default, the script will use breadth-first search to run the computation. The
 
 ### Popular articles
 
-The most popular articles (ie. the ones with most incoming links) can be found like so:
+The most popular articles (ie. the ones with most incoming links) can be found like so, with the number being how many of the most popular articles you want to print out:
 
 ```
-python popular.py data/wikipedia.pkl 
+python popular.py data/wikipedia.pkl 10 
 ```
 
 An optional second argument can be passed to specify the number of results to return (defaults to 10).
