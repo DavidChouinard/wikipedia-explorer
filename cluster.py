@@ -8,23 +8,32 @@ from dijkstra import *
 from functions import *
 from CONF import *
 
-def main(args):
+def main(argv=None, mute=False):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data", help="data file containing the graph")
+    args = parser.parse_args(argv)
+
     graph = pickle.load(open(args.data, 'rb'))
 
     cluster_centers, cluster_members, parent_cluster = cluster_information(graph, n_step_value)
 
-    print "Cluster center, size of n_step_set, size of cluster: "
+    if not mute:
+        print "Cluster center, size of n_step_set, size of cluster: "
     for c in cluster_centers:
         ns = n_step_set(graph, c, n_step_value, [])
-        print "%s: %d, %d" % (c, len(ns), len(cluster_members[c]))
+        if not mute:
+            print "%s: %d, %d" % (c, len(ns), len(cluster_members[c]))
 
-    print "\n"
-    print "Parent cluster dictionary"
-    pprint.pprint(parent_cluster)
+    if not mute:
+        print "\n"
+        print "Parent cluster dictionary"
+        pprint.pprint(parent_cluster)
 
-    print "\n"
-    print "Cluster members dictionary"
-    pprint.pprint(cluster_members)
+        print "\n"
+        print "Cluster members dictionary"
+        pprint.pprint(cluster_members)
+
+    return cluster_members
 
 # Given a graph, cluster_information returns a 
 # list of the cluster centers, a dictionary of cluster members, 
@@ -123,6 +132,4 @@ def find_cluster_centers(graph, n_step_value):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("data", help="data file containing the graph")
-    main(parser.parse_args())
+    main()

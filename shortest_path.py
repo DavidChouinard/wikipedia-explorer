@@ -9,12 +9,15 @@ from dijkstra import *
 from functions import *
 from CONF import *
 
-def main(args):
-
-    # If both args.d and args.n are false, use DFS
-    # If args.n is true, use naive
-    # If args.d is true, use Dijkstra
-    # If args.b is true, use BFS
+def main(argv=None, mute=False):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data", help="data file containing the graph")
+    parser.add_argument("source", help="source article title")
+    parser.add_argument("destination", help="destination article title")
+    parser.add_argument('-n', action='store_true', default=False, help="use naive algorithm")
+    parser.add_argument('-b', action='store_true', default=False, help="use BFS algorithm")
+    parser.add_argument('-d', action='store_true', default=False, help="use Dijkstra's algorithm")
+    args = parser.parse_args(argv)
 
     source_k = args.source
     dest_k = args.destination
@@ -30,29 +33,36 @@ def main(args):
     #pprint.pprint(rgraph)
 
     if source_k not in de_graph:
-        print "start node not in graph"
+        if not mute:
+            print "start node not in graph"
+        return None
     elif dest_k not in de_graph:
-        print "end node not in graph"
+        if not mute:
+            print "end node not in graph"
+        return None
     else:
         if args.n:
-            print "Naive"
+            if not mute:
+                print "Naive"
             sp = find_shortest_path(graph,source_k,dest_k,[])
         elif args.d:
-            print "Dijkstra"
+            if not mute:
+                print "Dijkstra"
             sp = shortestPath(wgraph,source_k, dest_k)
         else:
-            print "BFS"
+            if not mute:
+                print "BFS"
             sp = bfs(graph,source_k, dest_k)
 
-        if sp:
-            print len(sp)-1, sp, ":", source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
-        else:
-            print "path does not exist."
-    
+        if not mute:
+            if sp:
+                print len(sp)-1, sp, ":", source_k.encode('ascii', 'ignore'), "->", dest_k.encode('ascii', 'ignore')
+            else:
+                print "path does not exist."
 
+    return len(sp) - 1
 
-# from http://www.python.org/doc/essays/graphs.html
-
+# source: http://www.python.org/doc/essays/graphs.html
 def find_shortest_path(graph, start, end, path):
     if len(path) > maxPathLength:
         #print "long path:", len(path)
@@ -75,8 +85,7 @@ def find_shortest_path(graph, start, end, path):
                     shortest = newpath
     return shortest
 
-# bfs found here : 
-#   http://stackoverflow.com/questions/8922060/breadth-first-search-trace-path
+# source: http://stackoverflow.com/questions/8922060/breadth-first-search-trace-path
 def bfs(graph, start, end):
     # maintain a queue of paths
     queue = []
@@ -100,11 +109,4 @@ def bfs(graph, start, end):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("data", help="data file containing the graph")
-    parser.add_argument("source", help="source article title")
-    parser.add_argument("destination", help="destination article title")
-    parser.add_argument('-n', action='store_true', default=False, help="use naive algorithm")
-    parser.add_argument('-b', action='store_true', default=False, help="use BFS algorithm")
-    parser.add_argument('-d', action='store_true', default=False, help="use Dijkstra's algorithm")
-    main(parser.parse_args())
+    main()
